@@ -9,7 +9,19 @@ const OVERLAY_MS = 6_500;
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const params = new URLSearchParams(location.search);
-const mode = params.get('t');
+
+// Hidden settings (S key or click the logo), remembered by this screen's browser.
+const SETTINGS_KEY = 'deep6.settings';
+function loadSettings() {
+  try { return JSON.parse(localStorage.getItem(SETTINGS_KEY)) || {}; } catch { return {}; }
+}
+function saveSettings(s) {
+  try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); } catch {}
+}
+const settings = loadSettings();
+const urlMode = params.get('t');
+// Demo switch overrides whatever the URL says, so the TV can stay on /?t=auto.
+const mode = settings.demo || urlMode === 'demo' ? 'demo' : urlMode;
 
 let tid = mode && mode !== 'auto' ? mode : null;
 let state = null;
@@ -27,8 +39,12 @@ addEventListener('resize', fit);
 fit();
 
 // Click or press F for fullscreen; cursor appears only while the mouse moves.
-document.addEventListener('keydown', e => { if (e.key === 'f') toggleFullscreen(); });
-document.addEventListener('dblclick', toggleFullscreen);
+document.addEventListener('keydown', e => {
+  if (e.key === 'f') toggleFullscreen();
+  if (e.key === 's') toggleSettings();
+  if (e.key === 'Escape') $('settings').classList.add('hidden');
+});
+document.addEventListener('dblclick', e => { if (!e.target.closest('#settings, .logo')) toggleFullscreen(); });
 function toggleFullscreen() {
   if (document.fullscreenElement) document.exitFullscreen();
   else document.documentElement.requestFullscreen?.();
@@ -503,11 +519,53 @@ async function showPicker() {
   }
 }
 
+// ---------- settings ----------
+const SPEEDS = [[1, 'Real time'], [3, 'Fast'], [8, 'Very fast']];
+function toggleSettings() {
+  const el = $('settings');
+  if (!el.classList.contains('hidden')) return el.classList.add('hidden');
+  const on = mode === 'demo';
+  const speed = Number(settings.demoSpeed) || 3;
+  el.innerHTML = `<div class="box">
+    <h1>Settings</h1>
+    <div class="opt">
+      <div><b>Demo mode</b><small>Fake tournament for testing. Overrides the real event on this screen.</small></div>
+      <button class="switch ${on ? 'on' : ''}" data-act="demo"><i></i>${on ? 'ON' : 'OFF'}</button>
+    </div>
+    <div class="opt ${on ? '' : 'off'}">
+      <div><b>Demo speed</b></div>
+      <div class="seg">${SPEEDS.map(([v, l]) => `<button data-speed="${v}" class="${v === speed ? 'on' : ''}">${l}</button>`).join('')}</div>
+    </div>
+    <p>Press S or click the logo to open this. Esc to close.</p>
+  </div>`;
+  el.classList.remove('hidden');
+}
+$('settings').addEventListener('click', e => {
+  const b = e.target.closest('button');
+  if (!b) {
+    if (e.target.id === 'settings') toggleSettings();
+    return;
+  }
+  if (b.dataset.act === 'demo') {
+    settings.demo = mode !== 'demo';
+    saveSettings(settings);
+    // Turning demo off from a /?t=demo link falls back to following tonight's event.
+    if (!settings.demo && urlMode === 'demo') location.search = '?t=auto';
+    else location.reload();
+  } else if (b.dataset.speed) {
+    settings.demoSpeed = Number(b.dataset.speed);
+    saveSettings(settings);
+    if (mode === 'demo') location.reload();
+    else toggleSettings(), toggleSettings();
+  }
+});
+document.querySelector('#top .logo').addEventListener('click', toggleSettings);
+
 // ---------- boot ----------
 if (!mode) {
   showPicker();
 } else if (mode === 'demo') {
-  Demo.start(params.get('speed'));
+  Demo.start(params.get('speed') || settings.demoSpeed);
   setInterval(load, 1000);
   load();
 } else if (mode === 'auto') {

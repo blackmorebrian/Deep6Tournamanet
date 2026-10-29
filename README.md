@@ -20,6 +20,8 @@ Built for a bar TV used as a computer monitor: fixed 16:9 layout that scales to 
 
 On the TV: press **F** or double-click for fullscreen. The cursor hides itself.
 
+**Hidden settings:** press **S** or click the logo. The **Demo mode** switch runs the fake tournament on that screen whatever the URL says, so the TV can stay on `/?t=auto` and you flip demo on and off from the screen itself. The browser remembers the setting, and demo speed, across reloads.
+
 ## How it works
 ```
 TV browser ──/api/state──▶ Vercel function (holds token) ──▶ api.matchplay.events

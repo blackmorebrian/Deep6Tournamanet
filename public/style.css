@@ -221,3 +221,24 @@ body.picking { cursor: default; }
 #picker a .st.started { background: var(--magenta); }
 #picker a .st.planned { background: #1b4a6b; }
 #picker a.auto { border-color: var(--gold); }
+
+/* ---------- hidden settings ---------- */
+#top .logo { cursor: pointer; }
+#settings { position: absolute; inset: 0; z-index: 30; background: rgba(2, 5, 12, .82); display: flex; align-items: center; justify-content: center; }
+#settings .box { width: 1100px; background: #0a1426; border: 2px solid var(--line); border-radius: 26px; padding: 50px 60px; }
+#settings h1 { font-family: var(--display); font-size: 90px; letter-spacing: 4px; color: var(--brand); line-height: 1; margin-bottom: 30px; }
+#settings .opt { display: flex; justify-content: space-between; align-items: center; gap: 40px; padding: 26px 0; border-top: 2px solid var(--line); }
+#settings .opt.off { opacity: .35; }
+#settings .opt b { display: block; font-size: 50px; font-weight: 800; }
+#settings .opt small { display: block; font-size: 30px; color: var(--dim); font-weight: 600; margin-top: 4px; }
+#settings button { font: inherit; cursor: pointer; color: var(--text); background: #1a2438; border: 2px solid rgba(255, 255, 255, .2); border-radius: 14px; }
+#settings .switch { display: flex; align-items: center; gap: 18px; font-family: var(--display); font-size: 46px; letter-spacing: 3px; padding: 10px 26px 6px 12px; min-width: 210px; }
+#settings .switch i { width: 90px; height: 48px; border-radius: 24px; background: #334; position: relative; transition: background .2s; }
+#settings .switch i::after { content: ''; position: absolute; top: 6px; left: 6px; width: 36px; height: 36px; border-radius: 50%; background: #fff; transition: left .2s; }
+#settings .switch.on { border-color: var(--brand); color: var(--brand); }
+#settings .switch.on i { background: var(--brand); }
+#settings .switch.on i::after { left: 48px; }
+#settings .seg { display: flex; gap: 10px; }
+#settings .seg button { font-size: 34px; font-weight: 700; padding: 12px 24px; }
+#settings .seg button.on { border-color: var(--cyan); color: var(--cyan); }
+#settings p { font-size: 28px; color: var(--dim); margin-top: 26px; }
