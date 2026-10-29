@@ -1,0 +1,11 @@
+{
+  "name": "deep6-tournament-dashboard",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node dev.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

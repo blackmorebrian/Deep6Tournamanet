@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Deep 6 Live</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div id="stage">
+    <div class="bg"><div class="bg-grid"></div><div class="bg-glow"></div></div>
+
+    <header id="top">
+      <div class="brand">
+        <img class="logo" src="/logo.png" alt="Deep 6 Arcade">
+        <div class="tname" id="tname">Loading…</div>
+      </div>
+      <div class="round" id="round"></div>
+      <div class="meta">
+        <div class="alive" id="alive"></div>
+        <div class="live" id="live"><i></i>LIVE</div>
+        <div class="clock" id="clock"></div>
+      </div>
+    </header>
+
+    <main id="main">
+      <section id="board" class="panel">
+        <h2>Standings</h2>
+        <div id="rows"></div>
+        <div id="pager"></div>
+      </section>
+      <section id="matches" class="panel">
+        <h2 id="matchesTitle">Now Playing</h2>
+        <div id="cards"></div>
+        <div id="waiting"></div>
+      </section>
+    </main>
+
+    <section id="screen" class="hidden"></section>
+
+    <footer id="ticker"><div class="label">Results</div><div class="track"><div id="tickerInner"></div></div></footer>
+
+    <div id="overlay" class="hidden"></div>
+    <div id="picker" class="hidden"></div>
+  </div>
+  <script src="/demo.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>
