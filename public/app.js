@@ -92,6 +92,7 @@ async function load() {
   } catch (e) {
     console.warn('load failed', e);
     $('live').classList.add('off');
+    if (!state) $('tname').textContent = `Can't reach Matchplay: ${e.message}`;
   }
 }
 
@@ -142,10 +143,14 @@ function switchTo(id) {
 
 async function followAuto() {
   try {
-    const { auto } = await (await fetch('/api/tournaments')).json();
-    if (auto) switchTo(auto);
+    const res = await fetch('/api/tournaments');
+    const body = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(body.error || `server returned ${res.status}`);
+    if (body.auto) switchTo(body.auto);
+    else if (!state) $('tname').textContent = 'No Matchplay tournaments found';
   } catch (e) {
     console.warn('auto lookup failed', e);
+    if (!state) $('tname').textContent = `Can't reach Matchplay: ${e.message}`;
   }
 }
 
@@ -506,7 +511,10 @@ async function showPicker() {
   el.classList.remove('hidden');
   el.innerHTML = `<h1><img src="/logo.png" alt="Deep 6 Arcade">Pick a tournament</h1><p>Loading…</p>`;
   try {
-    const { tournaments, auto } = await (await fetch('/api/tournaments')).json();
+    const res = await fetch('/api/tournaments');
+    const body = await res.json().catch(() => ({}));
+    if (!res.ok || !body.tournaments) throw new Error(body.error || `server returned ${res.status}`);
+    const { tournaments, auto } = body;
     const autoT = tournaments.find(t => t.id === auto);
     el.innerHTML = `<h1><img src="/logo.png" alt="Deep 6 Arcade">Pick a tournament</h1>
       <p>Choose what this screen shows. Press F or double-click for fullscreen.</p>
